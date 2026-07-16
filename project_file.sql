@@ -1,11 +1,23 @@
 -- SQL Assessment: Employees & Sales Database
 
--- (These tasks were completed using the 'people' database created during the D4 session.)
+-- (These tasks were completed using the 'people' database in the accompanying script.)
 
 --------------------------------------------------------------------------------------------------------------------------------
 -- TASK 1 - Query Challenges
 
--- 1) List the first name, last name, and salary of all employees who earn more than the average salary in the company.-- method 1: finding the average salary and hard-coding the value into another SELECT statement.SELECT ROUND(AVG(salary),2)FROM employees; -- returns the average salary to 2.d.p.SELECT first_name, last_name, salaryFROM employeesWHERE salary > 4388.16;-- method 2: using a subquerySELECT first_name, last_name, salaryFROM employeesWHERE salary > (SELECT AVG(salary) FROM employees);
+-- 1) List the first name, last name, and salary of all employees who earn more than the average salary in the company.
+-- method 1: finding the average salary and hard-coding the value into another SELECT statement.
+SELECT ROUND(AVG(salary),2)
+FROM employees; -- returns the average salary to 2.d.p.
+
+SELECT first_name, last_name, salary
+FROM employees
+WHERE salary > 4388.16;
+
+-- method 2: using a subquery
+SELECT first_name, last_name, salary
+FROM employees
+WHERE salary > (SELECT AVG(salary) FROM employees);
 
 -- 2) Show the total salary per department, but only include departments where the total salary exceeds 60,000.
 SELECT department, SUM(salary) AS total_salary
@@ -18,24 +30,24 @@ SELECT department, COUNT(*) AS employee_count
 FROM employees
 GROUP BY department;
 
--- 4) Show all employees whose last names contain the letter ìeî AND whose salary is below 4000.
+-- 4) Show all employees whose last names contain the letter ‚Äúe‚Äù AND whose salary is below 4000.
 SELECT *
 FROM employees
 WHERE last_name LIKE '%e%' AND salary < 4000;
 
--- 5) Identify the highest salary in the ìPrivate Individualsî department.
+-- 5) Identify the highest salary in the ‚ÄúPrivate Individuals‚Äù department.
 SELECT TOP 1 * -- returns the first row (i.e. the highest salary after sorting)
 FROM employees
 WHERE department = 'Private Individuals'
 ORDER BY salary DESC;
 
--- 6) Identify the lowest salary in the ìCorporateî department.
+-- 6) Identify the lowest salary in the ‚ÄúCorporate‚Äù department.
 SELECT TOP 1 *
 FROM employees
 WHERE department = 'Corporate'
 ORDER BY salary ASC;
 
--- 7) List all employees whose first name starts with ëAí OR ends with ëaí.
+-- 7) List all employees whose first name starts with ‚ÄòA‚Äô OR ends with ‚Äòa‚Äô.
 SELECT *
 FROM employees
 WHERE first_name LIKE 'A%' OR first_name LIKE '%a';
@@ -70,7 +82,7 @@ ADD department_id int CONSTRAINT dept_id_fkey FOREIGN KEY REFERENCES departments
 -- method 1: multiple updates
 UPDATE employees
 SET department_id = 1
-WHERE department = 'Coporate'
+WHERE department = 'Corporate'
 
 UPDATE employees
 SET department_id = 2
@@ -99,7 +111,15 @@ JOIN employees AS emp
 ON dep.department_id = emp.department_id
 GROUP BY dep.department_name;
 
--- 3) List all employees in the Corporate department using a JOIN. SELECT emp.first_name, emp.last_nameFROM employees AS empJOIN departments AS depON emp.department_id = dep.department_idWHERE dep.department_name = 'Corporate';-- 4) Show the average salary per department, rounded to two decimal places.SELECT dep.department_name, CAST(AVG(emp.salary) AS DECIMAL(10,2)) AS average_salary
+-- 3) List all employees in the Corporate department using a JOIN. 
+SELECT emp.first_name, emp.last_name
+FROM employees AS emp
+JOIN departments AS dep
+ON emp.department_id = dep.department_id
+WHERE dep.department_name = 'Corporate';
+
+-- 4) Show the average salary per department, rounded to two decimal places.
+SELECT dep.department_name, CAST(AVG(emp.salary) AS DECIMAL(10,2)) AS average_salary
 FROM employees AS emp
 JOIN departments AS dep
 ON emp.department_id = dep.department_id
@@ -131,7 +151,7 @@ FROM employees
 GROUP BY department;
 -- Again, using the ROUND function results in trailing zeroes whereas a cast to a DECIMAL produces the desired result
 
--- 5) Produce a final report listing all employees sorted by department (AñZ) and salary (highest to lowest).
+-- 5) Produce a final report listing all employees sorted by department (A‚ÄìZ) and salary (highest to lowest).
 SELECT first_name, last_name, department, salary
 FROM employees
 ORDER BY 3 ASC, 4 DESC; -- 3 refering to department in the SELECT statement and 4 referring to salary
